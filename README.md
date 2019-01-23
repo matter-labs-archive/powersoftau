@@ -16,17 +16,17 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 
 #Procedure:
 
-1. Client downloads latest challenge file from ftp-server via with your ssl key.
+1. You download latest challenge file from ftp-server with your ssl key.
 	You can use an UI program as Filezilla(host is trusted-setup.gnosis.pm) or the following shell command:
 		```bash
-		scp  your_username@trusted-setup.gnosis.pm:challenge /local/dir
+		sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:challenge ~/challenge
 		```
-2. Copy the downloaded challenge files to your dedicated computer for running the ceremony.
+2. Copy the downloaded challenge file to your dedicated computer for running the ceremony.
 3. Download the repository
 	git clone git@github.com:matterinc/powersoftau.git
 	and copy it to your dedicated computer.
-4. Performany some of the recommendated steps for ceremony from the next chapter.	
-5. Then do the acutalcompute :
+4. Performany some of the recommendated steps for ceremony from the next section.	
+5. Then do the acutal computation:
 	 cargo run --release --bin compute_constrained
 6. Broadcast your contribution hash via twitter or your preferred social media account. 
 7. Upload the response file to ftp-server.  
