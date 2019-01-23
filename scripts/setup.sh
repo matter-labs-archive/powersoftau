@@ -2,7 +2,7 @@
 
 ##Setup:
 
-# First a new constraint system is created via:
+# First a new ceremony setup is created via:
 rm challenge
 rm response
 rm new_challenge

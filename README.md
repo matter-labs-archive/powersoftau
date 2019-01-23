@@ -12,7 +12,24 @@ Extended to support Ethereum's BN256 curve and made it easier to change size of 
 
 ## Instructions
 
-Instructions for a planned ceremony will be posted when everything is tested and finalized.
+Every participant needs to create a ssh key. For help see [here](https://confluence.atlassian.com/bitbucketserver/creating-ssh-keys-776639788.html). Please provide the public key in the [gitter group](https://gitter.im/Trusted_setup_for_SNAPPS/community). Then, we will propose a slot for the participation for you. Once we agreed on a slot, you are supposed to do the following steps:
+
+#Procedure:
+
+1. Client downloads latest challenge file from ftp-server via with your ssl key.
+	You can use an UI program as Filezilla(host is trusted-setup.gnosis.pm) or the following shell command:
+		```bash
+		scp  your_username@trusted-setup.gnosis.pm:challenge /local/dir
+		```
+2. Copy the downloaded challenge files to your dedicated computer for running the ceremony.
+3. Download the repository
+	git clone git@github.com:matterinc/powersoftau.git
+	and copy it to your dedicated computer.
+4. Performany some of the recommendated steps for ceremony from the next chapter.	
+5. Then do the acutalcompute :
+	 cargo run --release --bin compute_constrained
+6. Broadcast your contribution hash via twitter or your preferred social media account. 
+7. Upload the response file to ftp-server.  
 
 ## Recommendations from original ceremony
 

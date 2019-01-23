@@ -4,8 +4,7 @@
 
 #1. Client downloads latest challenge file from ftp-server via provided password-login
 #2. Then he/she computes:
-cargo run --release --bin compute_constrained
-#3. Broadcast their contribution hash via twitter or their prefered 
+#3 cargo run --release --bin compute_constrained
 #4. Uploades the response file to ftp-server via provided password-login
 
 
