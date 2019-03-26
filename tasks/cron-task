@@ -1,0 +1,3 @@
+
+# run participate every minute
+*  *  *  *  *   bash ~/app/scripts/validationAndPreparation.sh
