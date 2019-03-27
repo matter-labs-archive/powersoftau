@@ -48,6 +48,19 @@ Participants of the ceremony sample some randomness, perform a computation, and 
 
 It is totally up to the participants. In general, participants should beware of side-channel attacks and assume that remnants of the randomness will be in RAM after the computation has finished.
 
+## Running docker image for automatic validation 
+
+For starting the docker, just run:
+```bash
+docker build . --tag
+docker run --rm -it -v ~/.ssh:/root/.ssh:ro alpine.
+```
+For login into the docker run:
+```bash
+docker exec -p 22:22 -it inspiring_austin bash
+```
+The log outputs can be found of the cron jobs can be found here:
+
 ## License
 
 Licensed under either of
