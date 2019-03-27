@@ -12,7 +12,7 @@ do
 	echo "Processing $f"
 	DATE=` lftp -e "set ssl:key-file ~/.ssh/id_rsa; cls -l --time-style=%FT%T $f/* --sort=date | head -1; bye" sftp://josojo:@trusted-setup.staging.gnosisdev.com | awk '{print $6}' | sed 's/[^0-9]*//g'`
 	echo "DATE is $DATE"
-	if [ $DATE -ge $NEWESTDATE ]; then
+	if [ $DATE -gt $NEWESTDATE ]; then
 		echo "found newer date"
 		NEWESTDATE=$DATE
 		NEWESTFILE=`lftp -e "set ssl:key-file ~/.ssh/id_rsa; cls -l --time-style=%FT%T $f/* --sort=date | head -1; bye" sftp://josojo:@trusted-setup.staging.gnosisdev.com | awk '{print $7}'`
@@ -42,4 +42,7 @@ if [[ !  -z "${NEWESTFILE}" ]]; then
 	TIME=$(date +%s.%N)
 	mv challenge "challenge-$TIME"
 	echo "put challenge" | sftp josojo@trusted-setup.staging.gnosisdev.com:josojo
+
 fi
+export TRUSTEDSETUPTURN=$TRUSTEDSETUPTURN+1
+export NEWESTDATE=$NEWESTDATE  
