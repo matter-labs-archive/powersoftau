@@ -53,13 +53,8 @@ It is totally up to the participants. In general, participants should beware of 
 For starting the docker, just run:
 ```bash
  docker build --tag=valdiation_worker .
- docker run -it -v ~/.ssh/:/root/.ssh -d valdiation_worker bash
+ docker run -it -v ~/.ssh/:/root/.ssh valdiation_worker bash
 
-```
-For login into the docker run:
-```bash
-docker ps -all
-docker exec -it <container_id> bash
 ```
 The log outputs can be found of the cron jobs can be found here:
 ```bash

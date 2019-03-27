@@ -1,3 +1,4 @@
+#!/bin/bash
 
 FILES=`lftp -e "set ssl:key-file ~/.ssh/id_rsa; cls; bye" sftp://josojo:@trusted-setup.staging.gnosisdev.com`
 if [[ -z "${NEWESTDATE}" ]]; then

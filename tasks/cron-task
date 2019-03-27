@@ -1,2 +1,2 @@
 # run participate every minute
-* * * * *   /bin/bash -c "source /app/scripts/validationAndPreparation_constrained.sh >> /var/log/cron.log 2>&1"
+* * * * *   bash /app/scripts/validationAndPreparation_constrained.sh >> /var/log/cron.log 2>&1

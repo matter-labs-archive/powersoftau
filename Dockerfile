@@ -16,7 +16,11 @@ RUN cargo build
 
 EXPOSE 22
 
-COPY . .
+COPY scripts/. scripts/.
+
+#create config file for validation script
+RUN mkdir /app/config
+RUN echo '1' > /app/config/lastestContributionDate.txt
 
 # Add crontab file in the cron directory
 ADD tasks/cron-task /etc/cron.d/hello-cron
@@ -30,11 +34,8 @@ RUN crontab /etc/cron.d/hello-cron
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-RUN touch /app/config/lastestContributionDate.txt
-
-RUN 1 > config/lastestContributionDate.txt
-
 # Run the command on container startup
 CMD cron && tail -f /var/log/cron.log
+#CMD ["cron", "-f"]
 #RUN ls
 #RUN bash scripts/initial_setup_constrained.sh 
