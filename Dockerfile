@@ -21,6 +21,8 @@ COPY scripts/. scripts/.
 #create config file for validation script
 RUN mkdir /app/config
 RUN echo '1' > /app/config/lastestContributionDate.txt
+RUN echo '1' > /app/config/lastestContributionTurn.txt
+
 
 # Add crontab file in the cron directory
 ADD tasks/cron-task /etc/cron.d/hello-cron
