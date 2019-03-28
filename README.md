@@ -54,7 +54,6 @@ For starting the docker, just run:
 ```bash
  docker build --tag=valdiation_worker .
  docker run -it -v ~/.ssh/:/root/.ssh valdiation_worker bash
-
 ```
 The log outputs can be found of the cron jobs can be found here:
 ```bash
