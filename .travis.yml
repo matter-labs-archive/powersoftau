@@ -1,11 +1,13 @@
 language: ruby
 services:
 - docker
+env:
+  global:
+    - DOCKER_TAG=validation-worker
 before_install:
 - openssl aes-256-cbc -K $encrypted_fd47d756d2b5_key -iv $encrypted_fd47d756d2b5_iv
   -in id_rsa_worker.enc -out ~/id_rsa_worker -d
 - touch variables.sh
-- pwd
 - echo "export KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> variables.sh
 - echo "export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> variables.sh
 - echo "export TRUSTED_SETUP_TURN=2" >> variables.sh
@@ -15,12 +17,35 @@ before_install:
 - echo "export SSH_FILE=id_rsa_worker" >> variables.sh
 - echo "export SSH_USER=validationworker" >> variables.sh
 - chmod 600 ~/id_rsa_worker
-- docker build --tag=validation_worker .
+install:
+  - docker build -t $DOCKER_TAG .
 script:
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
   bash -c "source test/e2e-test_positive_verification.sh"
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
   bash -c "source test/e2e-test_negative_verification.sh"
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
   bash -c "source test/e2e-test_no_new_upload.sh"
-
+after_script:
+- |
+  # Create Docker image if branch master and not on pull requests
+  if [ "$TRAVIS_TEST_RESULT" == "0" ]; then
+    if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+      docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+      if [ "$TRAVIS_BRANCH" == "master" ]; then
+        echo "Pushing staging image...";
+        docker tag $DOCKER_TAG gnosispm/$DOCKER_TAG:staging;
+        docker push gnosispm/$DOCKER_TAG:staging;
+        echo "The image has been pushed";
+      elif [[ $TRAVIS_TAG = $TRAVIS_BRANCH ]]; then
+        echo "Pushing image tag $TRAVIS_TAG...";
+        docker tag $DOCKER_TAG gnosispm/$DOCKER_TAG:$TRAVIS_TAG;
+        docker push gnosispm/$DOCKER_TAG:$TRAVIS_TAG;
+        echo "The image has been pushed";
+      else
+        echo "There's no need to push the image to Docker-hub";
+      fi
+    else
+      echo "There's no need to push the image to Docker-hub";
+    fi
+  fi
