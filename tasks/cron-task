@@ -1,3 +1,2 @@
-
 # run participate every minute
-*  *  *  *  *   bash ~/app/scripts/validationAndPreparation.sh
+*  *  *  *  *  . /app/scripts/validation_controller.sh >> /var/log/cron.log 2>&1

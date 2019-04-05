@@ -1,19 +1,33 @@
 FROM rust:latest
-COPY . /app
+MAINTAINER alex@gnosis.pm
 
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-    nano \
-    sudo \
-    sftp \
-    lftp  
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
+				cron \
+ 				lftp \
+				nano \
+				xxd
 
-COPY tasks/cron-task /etc/crontabs/root
+RUN rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get -y install cron
+WORKDIR /app
+
+COPY Cargo.toml  ./
+RUN mkdir src && touch src/lib.rs && cargo build
+
+COPY src/. src/.
+COPY test/. test/.
+
+#support for sftp
+EXPOSE 22
+
+#PID file for storage of cron-pids
+RUN touch /root/forever.pid
+
+#create config file for validation script
+RUN mkdir /app/config
 
 # Add crontab file in the cron directory
-ADD crontab /etc/cron.d/hello-cron
+ADD tasks/cron-task /etc/cron.d/hello-cron
 
 # Give execution rights on the cron job
 RUN chmod 0644 /etc/cron.d/hello-cron
@@ -24,5 +38,15 @@ RUN crontab /etc/cron.d/hello-cron
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
+#Copy env variables folder for cron job
+COPY variables.sh ./
+
 # Run the command on container startup
-CMD cron && tail -f /var/log/cron.log
+CMD ["cron", "-f"]
+
+# Create .ssh folder for storage of ssh keys
+RUN mkdir /root/.ssh
+
+#COPY scripts to docker
+COPY scripts/. scripts/.
+

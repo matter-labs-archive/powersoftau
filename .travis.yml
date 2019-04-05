@@ -1,0 +1,26 @@
+language: ruby
+services:
+- docker
+before_install:
+- openssl aes-256-cbc -K $encrypted_fd47d756d2b5_key -iv $encrypted_fd47d756d2b5_iv
+  -in id_rsa_worker.enc -out ~/id_rsa_worker -d
+- touch variables.sh
+- pwd
+- echo "export KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> variables.sh
+- echo "export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> variables.sh
+- echo "export TRUSTED_SETUP_TURN=2" >> variables.sh
+- echo "export SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> variables.sh
+- echo "export MAKEFIRDDSTCONTRIBUTION=yes" >> variables.sh
+- echo "export CONSTRAINED=true" >> variables.sh
+- echo "export SSH_FILE=id_rsa_worker" >> variables.sh
+- echo "export SSH_USER=validationworker" >> variables.sh
+- chmod 600 ~/id_rsa_worker
+- docker build --tag=validation_worker .
+script:
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+  bash -c "source test/e2e-test_positive_verification.sh"
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+  bash -c "source test/e2e-test_negative_verification.sh"
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+  bash -c "source test/e2e-test_no_new_upload.sh"
+
