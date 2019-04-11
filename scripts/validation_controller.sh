@@ -1,12 +1,14 @@
 #!/bin/bash
+#
+# the validation controller script ensures that only one cron job will be active
 
 PIDFILE=/root/forever.pid
 PID=$(cat $PIDFILE)
 ps -p $PID > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
-echo "Job is already running"
-exit 1
+	echo "Job is already running"
+	exit 1
 else
 	## Process not found assume not running
 	echo $$ > $PIDFILE

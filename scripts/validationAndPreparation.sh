@@ -1,22 +1,17 @@
 #!/bin/bash
+#
+# validates a submission and prepares next challenge
+
 . /app/scripts/load_env_sshkey.sh
-
-if [[ -z "${THRESHOLD_DATE_FOR_FILE_ACCEPTANCE}" ]]; then
-  echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE should be set"
-  exit 1
-fi
-
-if [[ -z "${TRUSTED_SETUP_TURN}" ]]; then
-  echo "TRUSTED_SETUP_TURN should be set"
-  exit 1
-fi
-
 set -e 
 
+# reads newest contributions and stores its data in variables
 NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
 NEWEST_CONTRIBUTION_DATE=`echo "$NEWEST_CONTRIBUTION" | awk '{print $4 $5}' | sed 's/[^0-9]*//g'`
 NEWEST_CONTRIBUTION_NAME=`echo "$NEWEST_CONTRIBUTION" | awk '{print $6}'`
 NEWEST_CONTRIBUTION_NAME=${NEWEST_CONTRIBUTION_NAME:2}
+
+# checks whether a new contribution was found
 if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 				
 	echo "current newest contribution is $NEWEST_CONTRIBUTION_NAME with the time $NEWEST_CONTRIBUTION_DATE"
@@ -31,8 +26,8 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 	$connect_to_sftp_server:$NEWEST_CONTRIBUTION_NAME /app/.
 
 	echo "verifying the submission; this could take a while..."
+	set +e
 	if [[ ! -z "${CONSTRAINED}" ]]; then
-		set +e
 		cargo run --release --bin verify_transform_constrained
 		if [ $? -eq 0 ]; then
 		    VERIFIED="true"
@@ -41,9 +36,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 			VERIFIED="false"
 		    echo Verification failed
 		fi
-		set -e
 	else
-		set +e
 		cargo run --release --bin verify_transform
 		if [ $? -eq 0 ]; then
 		    VERIFIED="true"
@@ -52,8 +45,9 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 			VERIFIED="false"
 		    echo Verification failed
 		fi
-		set -e
 	fi
+	set -e
+	
 
 	if [[ "$VERIFIED" = "true" ]]; then
 		echo "uploading to ftp server and documentation; this could take a while..."
@@ -71,8 +65,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 		cp challenge "challenge-$TIME"
 		echo "put challenge-$TIME" | $connect_to_sftp_server:challenges
 
-
-		#safe new variables for next execution
+		#safe incremented variable Trusted_setup_turn for next execution
 		TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
 		sed -i "s/export TRUSTED_SETUP_TURN=.*/export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN/g" /app/variables.sh
 		

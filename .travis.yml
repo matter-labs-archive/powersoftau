@@ -12,7 +12,7 @@ before_install:
 - echo "export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> variables.sh
 - echo "export TRUSTED_SETUP_TURN=2" >> variables.sh
 - echo "export SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> variables.sh
-- echo "export MAKEFIRDDSTCONTRIBUTION=yes" >> variables.sh
+- echo "export MAKE_FIRST_CONTRIBUTION=yes" >> variables.sh
 - echo "export CONSTRAINED=true" >> variables.sh
 - echo "export SSH_FILE=id_rsa_worker" >> variables.sh
 - echo "export SSH_USER=validationworker" >> variables.sh
@@ -21,11 +21,7 @@ install:
   - docker build -t $DOCKER_TAG .
 script:
 - docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
-  bash -c "source test/e2e-test_positive_verification.sh"
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
-  bash -c "source test/e2e-test_negative_verification.sh"
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
-  bash -c "source test/e2e-test_no_new_upload.sh"
+  bash -c "bash test/util/run_all_tests.sh"
 after_script:
 - |
   # Create Docker image if branch master and not on pull requests
