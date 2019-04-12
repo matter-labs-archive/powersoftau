@@ -56,9 +56,8 @@ It is totally up to the participants. In general, participants should beware of 
 For starting the docker, just run:
 ```bash
  docker build --tag=validation_worker .
- docker run -it -v ~/.ssh/:/root/.ssh -e CONSTRAINED=true 
- -e SSH_PRIVATE_KEY=<private key> -e SSH_PUBLIC_KEY=<public key>
- -e SSH_USER=validationworker -e SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com -e THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=1 -e TRUSTED_SETUP_TURN=1 -e MAKE_FIRST_CONTRIBUTION=yes -e KEY_GITTER_TRUSTED_SETUP_ROOM=2ae0b8adf55e84b3bd41 validation_worker bash
+ docker run -it -v ~/.ssh/:/root/.ssh -v ~/gnosis/powersoftau:/app/  validation_worker bash
+
 ```
 Once logged into the docker, the following scripts are helpful:
 ```bash

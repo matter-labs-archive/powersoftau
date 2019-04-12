@@ -1,3 +1,4 @@
+if: (branch = master) OR (type = pull_request) OR (tag IS present)
 language: ruby
 services:
 - docker
@@ -16,11 +17,13 @@ before_install:
 - echo "export CONSTRAINED=true" >> variables.sh
 - echo "export SSH_FILE=id_rsa_worker" >> variables.sh
 - echo "export SSH_USER=validationworker" >> variables.sh
+- echo "export CHALLENGE_WORKDIR=/appTest" >> variables.sh
+- mkdir ~/appTest
 - chmod 600 ~/id_rsa_worker
 install:
   - docker build -t $DOCKER_TAG .
 script:
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker -v ~/appTest:/appTest/ $DOCKER_TAG
   bash -c "bash test/util/run_all_tests.sh"
 after_script:
 - |

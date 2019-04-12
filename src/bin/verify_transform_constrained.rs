@@ -12,6 +12,8 @@ use powersoftau::keypair::{PublicKey};
 use powersoftau::parameters::{UseCompression, CheckForCorrectness};
 
 use std::fs::OpenOptions;
+use std::env;
+
 use bellman::pairing::bn256::Bn256;
 use memmap::*;
 
@@ -26,10 +28,14 @@ const COMPRESS_NEW_CHALLENGE: UseCompression = UseCompression::No;
 fn main() {
     println!("Will verify and decompress a contribution to accumulator for 2^{} powers of tau", Bn256CeremonyParameters::REQUIRED_POWER);
     
+    
+    let env_var: String = env::var("CHALLENGE_WORKDIR").expect("Specify CHALLENGE_WORKDIR env variable");
+    let path = env_var + &String::from("/challenge");
+
     // Try to load `./challenge` from disk.
     let challenge_reader = OpenOptions::new()
                             .read(true)
-                            .open("challenge").expect("unable open `./challenge` in this directory");
+                            .open(path).expect("unable open `./challenge` in this directory");
 
     {
         let metadata = challenge_reader.metadata().expect("unable to get filesystem metadata for `./challenge`");
@@ -47,11 +53,13 @@ fn main() {
     }
 
     let challenge_readable_map = unsafe { MmapOptions::new().map(&challenge_reader).expect("unable to create a memory map for input") };
+    let env_var: String = env::var("CHALLENGE_WORKDIR").expect("Specify CHALLENGE_WORKDIR env variable");
+    let path = env_var + &String::from("/response");
 
     // Try to load `./response` from disk.
     let response_reader = OpenOptions::new()
                             .read(true)
-                            .open("response").expect("unable open `./response` in this directory");
+                            .open(path).expect("unable open `./response` in this directory");
 
     {
         let metadata = response_reader.metadata().expect("unable to get filesystem metadata for `./response`");
@@ -156,13 +164,15 @@ fn main() {
         println!("Don't need to recompress the contribution, please copy `./response` as `./new_challenge`");
     } else {
         println!("Verification succeeded! Writing to `./new_challenge`...");
-
+        
+        let env_var: String = env::var("CHALLENGE_WORKDIR").expect("Specify CHALLENGE_WORKDIR env variable");
+        let path = env_var + &String::from("/new_challenge");
         // Create `./new_challenge` in this directory
         let writer = OpenOptions::new()
                                 .read(true)
                                 .write(true)
                                 .create_new(true)
-                                .open("new_challenge").expect("unable to create `./new_challenge` in this directory");
+                                .open(path).expect("unable to create `./new_challenge` in this directory");
 
 
 

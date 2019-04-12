@@ -10,6 +10,8 @@ use powersoftau::utils::{blank_hash};
 
 use std::fs::OpenOptions;
 use std::io::{Write};
+use std::env;
+
 use bellman::pairing::bn256::Bn256;
 use memmap::*;
 
@@ -21,11 +23,13 @@ fn main() {
     println!("Will generate an empty accumulator for 2^{} powers of tau", Bn256CeremonyParameters::REQUIRED_POWER);
     println!("In total will generate up to {} powers", Bn256CeremonyParameters::TAU_POWERS_G1_LENGTH);
     
+    let env_var: String = env::var("CHALLENGE_WORKDIR").unwrap_or(String::from(""));
+    let path = env_var + &String::from("/challenge");
     let file = OpenOptions::new()
                             .read(true)
                             .write(true)
                             .create_new(true)
-                            .open("challenge").expect("unable to create `./challenge`");
+                            .open(path).expect("unable to create `./challenge`");
             
     let expected_challenge_length = match COMPRESS_NEW_CHALLENGE {
         UseCompression::Yes => {

@@ -16,13 +16,14 @@ set -e
 
 TURN_BEFORE_TEST=$TRUSTED_SETUP_TURN
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
-cp /app/response /app/response-temp
+cp "$CHALLENGE_WORKDIR/response" "$CHALLENGE_WORKDIR/response-temp"
 # read 1 byte at offset 40C
-b_hex=$(xxd -seek $((16#40C)) -l 1 -ps /app/response -)
+b_hex=$(xxd -seek $((16#40C)) -l 1 -ps "$CHALLENGE_WORKDIR/response" -)
 # delete 3 least significant bits
 b_dec=$(($((16#$b_hex)) & $((2#11111000))))
 # write 1 byte back at offset 40C
-printf "00040c: %02x" $b_dec | xxd -r - /app/response
+printf "00040c: %02x" $b_dec | xxd -r - "$CHALLENGE_WORKDIR/response"
+cd "$CHALLENGE_WORKDIR"
 echo "put response" | $connect_to_sftp_server:$SSH_USER
 
 source /app/scripts/validationAndPreparation.sh | grep "Verification failed"
