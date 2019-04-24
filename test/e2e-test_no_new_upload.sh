@@ -5,10 +5,10 @@
 source /app/test/util/assert.sh
 
 #tell the program that they have already validated something in the future:
-sed -i "s/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=40190405095223/g" /app/variables.sh
+sed -i "s/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=40190405095223/g" $DATABASE_FILE_PATH
 . /app/scripts/load_env_sshkey.sh
 
-#store turn 
+#store turn
 TURN_BEFORE_TEST=$TRUSTED_SETUP_TURN
 
 #run code

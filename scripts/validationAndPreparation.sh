@@ -3,7 +3,7 @@
 # validates a submission and prepares next challenge
 
 . /app/scripts/load_env_sshkey.sh
-set -e 
+set -e
 
 # reads newest contributions and stores its data in variables
 NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
@@ -18,7 +18,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 
 	#safe date of newest contribution so that files are not verified twice
 	THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$NEWEST_CONTRIBUTION_DATE #used for easy testing with source command
-	sed -i "s/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE/g" /app/variables.sh
+	sed -i "s/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE/g" $DATABASE_FILE_PATH
 
 	#If a new contribution is found, do verification and preparation for next round
 	cd $CHALLENGE_WORKDIR
@@ -27,7 +27,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 
 	echo "verifying the submission; this could take a while..."
 	set +e
-	
+
 	# cargo run --release --bin verify_transform_constrained
    	/app/target/release/verify_transform_constrained
 	if [ $? -eq 0 ]; then
@@ -57,7 +57,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 
 		#safe incremented variable Trusted_setup_turn for next execution
 		TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
-		sed -i "s/export TRUSTED_SETUP_TURN=.*/export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN/g" /app/variables.sh
+		sed -i "s/TRUSTED_SETUP_TURN=.*/TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN/g" $DATABASE_FILE_PATH
 
 		#Post a message in Gitter:
 		MESSAGE="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges"

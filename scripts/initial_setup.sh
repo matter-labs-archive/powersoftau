@@ -28,8 +28,8 @@ cp challenge "challenge-$TIME"
 echo "put challenge-$TIME" | $connect_to_sftp_server:challenges
 
 #optional first computation
-if [[ ! -z "${MAKE_FIRST_CONTRIBUTION}" ]]; then
-
+if [ ! -z "${MAKE_FIRST_CONTRIBUTION}" ]
+then
 	cp challenge /app/challenge
 	# cargo run --release --bin compute_constrained
 	/app/target/release/compute_constrained

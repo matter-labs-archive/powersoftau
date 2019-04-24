@@ -1,4 +1,5 @@
-if: (branch = master) OR (type = pull_request) OR (tag IS present)
+# Disable branch control for the moment
+# if: (branch = master) OR (type = pull_request) OR (tag IS present)
 language: ruby
 services:
 - docker
@@ -8,22 +9,26 @@ env:
 before_install:
 - openssl aes-256-cbc -K $encrypted_fd47d756d2b5_key -iv $encrypted_fd47d756d2b5_iv
   -in id_rsa_worker.enc -out ~/id_rsa_worker -d
-- touch variables.sh
-- echo "export KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> variables.sh
-- echo "export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> variables.sh
-- echo "export TRUSTED_SETUP_TURN=2" >> variables.sh
-- echo "export SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> variables.sh
-- echo "export MAKE_FIRST_CONTRIBUTION=yes" >> variables.sh
-- echo "export CONSTRAINED=true" >> variables.sh
-- echo "export SSH_FILE=id_rsa_worker" >> variables.sh
-- echo "export SSH_USER=validationworker" >> variables.sh
-- echo "export CHALLENGE_WORKDIR=/appTest" >> variables.sh
-- mkdir ~/appTest
+- |
+  # Create variables.sh, it represents a text file database, will be used for test purposes
+  mkdir -p /tmp/volume
+  touch /tmp/volume/variables.sh
+  echo "KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> /tmp/volume/variables.sh
+  echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> /tmp/volume/variables.sh
+  echo "TRUSTED_SETUP_TURN=2" >> /tmp/volume/variables.sh
+  echo "SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> /tmp/volume/variables.sh
+  echo "MAKE_FIRST_CONTRIBUTION=yes" >> /tmp/volume/variables.sh
+  echo "CONSTRAINED=true" >> /tmp/volume/variables.sh
+  echo "SSH_FILE=id_rsa_worker" >> /tmp/volume/variables.sh
+  echo "SSH_USER=validationworker" >> /tmp/volume/variables.sh
+  echo "CHALLENGE_WORKDIR=/tmp" >> /tmp/volume/variables.sh
+  echo "DATABASE_FILE_PATH=/tmp/volume/variables.sh" >> /tmp/volume/variables.sh # /app/variables.sh will get updated by some scripts
+  echo "RUST_BACKTRACE=1" >> /tmp/volume/variables.sh
 - chmod 600 ~/id_rsa_worker
 install:
-  - docker build -t $DOCKER_TAG .
+  - docker build -t $DOCKER_TAG -f DockerfileDevops .
 script:
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker -v ~/appTest:/appTest/ $DOCKER_TAG
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker --env-file /tmp/volume/variables.sh -v /tmp/volume:/tmp/volume $DOCKER_TAG
   bash -c "bash test/util/run_all_tests.sh"
 after_script:
 - |
