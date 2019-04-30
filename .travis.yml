@@ -23,6 +23,8 @@ before_install:
   echo "CHALLENGE_WORKDIR=/tmp" >> /tmp/volume/variables.sh
   echo "DATABASE_FILE_PATH=/tmp/volume/variables.sh" >> /tmp/volume/variables.sh # /app/variables.sh will get updated by some scripts
   echo "RUST_BACKTRACE=1" >> /tmp/volume/variables.sh
+  echo "GITTER_ACCESS_TOKEN=$GITTER_ACCESS_TOKEN" >> /tmp/volume/variables.sh
+  echo "GITTER_ROOM=5ca22b42d73408ce4fbc758e" >> /tmp/volume/variables.sh
 - chmod 600 ~/id_rsa_worker
 install:
   - docker build -t $DOCKER_TAG -f DockerfileDevops .

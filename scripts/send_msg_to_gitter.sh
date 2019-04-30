@@ -5,4 +5,4 @@
 
 . /app/scripts/load_env_sshkey.sh
 
-curl -d message="$1" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
+ curl -X post -H "Content-Type: application/json" -H "Authorization: Bearer $GITTER_ACCESS_TOKEN" -d "{\"text\":\"$1\"}" "https://api.gitter.im/v1/rooms/$GITTER_ROOM/chatMessages"
