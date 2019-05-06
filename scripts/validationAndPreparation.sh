@@ -6,7 +6,7 @@
 set -e
 
 # reads newest contributions and stores its data in variables
-NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
+NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -o StrictHostKeyChecking=no -i ~/.ssh/$SSH_FILE\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
 NEWEST_CONTRIBUTION_DATE=`echo "$NEWEST_CONTRIBUTION" | awk '{print $4 $5}' | sed 's/[^0-9]*//g'`
 NEWEST_CONTRIBUTION_NAME=`echo "$NEWEST_CONTRIBUTION" | awk '{print $6}'`
 NEWEST_CONTRIBUTION_NAME=${NEWEST_CONTRIBUTION_NAME:2}
