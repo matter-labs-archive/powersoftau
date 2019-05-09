@@ -56,8 +56,24 @@ It is totally up to the participants. In general, participants should beware of 
 For starting the docker, just run:
 ```bash
  docker build --tag=validation_worker .
-docker run -it -v ~/.ssh/:/root/.ssh -v ~/gnosis/powersoftau:/app/ --env-file /tmp/volume/variables.sh validation_worker bash
+ docker run -it -v ~/.ssh/:/root/.ssh -v ~/gnosis/powersoftau:/app/ -v ~/gnosis/powersoftau/tmp:/tmp --env-file ./variables.sh validation_worker bash
 ```
+This requires a prepared env file looking like this:
+```
+THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190509091113
+TRUSTED_SETUP_TURN=10
+SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com
+MAKE_FIRST_CONTRIBUTION=yes
+CONSTRAINED=true
+SSH_USER=validationworker
+SSH_FILE=id_rsa_worker
+CHALLENGE_WORKDIR=/tmp
+DATABASE_FILE_PATH=/app/variables.sh
+RUST_BACKTRACE=1
+GITTER_ACCESS_TOKEN=<token>
+GITTER_ROOM=5ca22b42d73408ce4fbc758e
+```
+
 Once logged into the docker, the following scripts are helpful:
 ```bash
 #setting up env variables for cron job

@@ -6,10 +6,9 @@ source /app/test/util/assert.sh
 
 export MAKE_FIRST_CONTRIBUTION=yes
 
-sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/bn256/mod.rs
-sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/small_bn256/mod.rs
+source /app/scripts/recompile_code_with_trusted_setup_size.sh 8
+
 sed -i "s/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=1/g" $DATABASE_FILE_PATH
-. /app/scripts/build_all.sh
 
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
 rm "$CHALLENGE_WORKDIR/response"
@@ -24,6 +23,5 @@ LINENO="Contribution turn not adjusted"
 assert "$condition" $LINENO
 
 #reseting values
-sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 26;/g' /app/src/bn256/mod.rs
-sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 26;/g' /app/src/small_bn256/mod.rs
-. /app/scripts/build_all.sh
+source /app/scripts/recompile_code_with_trusted_setup_size.sh 26
+
