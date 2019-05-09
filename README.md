@@ -56,8 +56,7 @@ It is totally up to the participants. In general, participants should beware of 
 For starting the docker, just run:
 ```bash
  docker build --tag=validation_worker .
- docker run -it -v ~/.ssh/:/root/.ssh -v ~/gnosis/powersoftau:/app/  validation_worker bash
-
+docker run -it -v ~/.ssh/:/root/.ssh -v ~/gnosis/powersoftau:/app/ --env-file /tmp/volume/variables.sh validation_worker bash
 ```
 Once logged into the docker, the following scripts are helpful:
 ```bash

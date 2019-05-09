@@ -12,6 +12,7 @@ sed -i "s/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/THRESHOLD_DATE_FOR_FILE_ACCEPTAN
 . /app/scripts/build_all.sh
 
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
+rm "$CHALLENGE_WORKDIR/response"
 source /app/scripts/validationAndPreparation.sh
 
 condition="$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE -ge 1"
