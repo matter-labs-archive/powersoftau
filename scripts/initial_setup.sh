@@ -24,8 +24,8 @@ MESSAGE="The ceremony is ready to get started! The first challenge was uploaded 
 #document new challenge in same folder
 #copying the first upload is not supported, see here: https://superuser.com/questions/1166354/copy-file-on-sftp-to-another-directory-without-roundtrip
 TIME=$(date +%s.%N)
-cp challenge "challenge-$TIME"
-echo "put challenge-$TIME" | $connect_to_sftp_server:challenges
+cp challenge "challenge-1-$TIME"
+echo "put challenge-1-$TIME" | $connect_to_sftp_server:challenges
 
 #optional first computation
 if [ ! -z "${MAKE_FIRST_CONTRIBUTION}" ]
