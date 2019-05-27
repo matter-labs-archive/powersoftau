@@ -16,16 +16,16 @@ set -e
 /app/target/release/new_constrained
 
 # Upload new challenge file to the challenges folder.
-echo "put challenge" | $connect_to_sftp_server:challenges
+echo "put challenge" | $connect_to_sftp_server:$SFTP_CHALLENGE_PATH
 
-MESSAGE="The ceremony is ready to get started! The first challenge was uploaded here: ${SFTP_ADDRESS}:challenges"
+MESSAGE="The ceremony is ready to get started! The first challenge was uploaded here: ${SFTP_ADDRESS}:$SFTP_CHALLENGE_PATH"
 . /app/scripts/send_msg_to_gitter.sh "$MESSAGE"
 
 #document new challenge in same folder
 #copying the first upload is not supported, see here: https://superuser.com/questions/1166354/copy-file-on-sftp-to-another-directory-without-roundtrip
 TIME=$(date +%s.%N)
 cp challenge "challenge-1-$TIME"
-echo "put challenge-1-$TIME" | $connect_to_sftp_server:challenges
+echo "put challenge-1-$TIME" | $connect_to_sftp_server:$SFTP_ARCHIVE_PATH
 
 #optional first computation
 if [ ! -z "${MAKE_FIRST_CONTRIBUTION}" ]
