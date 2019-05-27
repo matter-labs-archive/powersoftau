@@ -49,7 +49,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 		echo "put challenge" | $connect_to_sftp_server:$SFTP_CHALLENGE_PATH
 
 		#document response from previous participant
-		echo "put response-$TRUSTED_SETUP_TURN-$TIME" | $connect_to_sftp_server:SFTP_ARCHIVE_PATH
+		echo "put response-$TRUSTED_SETUP_TURN-$TIME" | $connect_to_sftp_server:$SFTP_ARCHIVE_PATH
 
 
 		#safe incremented variable Trusted_setup_turn for next execution

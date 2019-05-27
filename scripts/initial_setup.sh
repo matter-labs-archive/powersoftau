@@ -15,7 +15,7 @@ set -e
 # cargo run --release --bin new_constrained
 /app/target/release/new_constrained
 
-# Upload new challenge file to the $SFTP_CHALLENGE_PATH folder.
+# Upload new challenge file to the $FTP_CHALLENGE_PATH folder.
 echo "put challenge" | $connect_to_sftp_server:$SFTP_CHALLENGE_PATH
 
 MESSAGE="The ceremony is ready to get started! The first challenge was uploaded here: ${SFTP_ADDRESS}:$SFTP_CHALLENGE_PATH"
