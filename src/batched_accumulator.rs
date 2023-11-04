@@ -143,14 +143,14 @@ impl<E:Engine, P: PowersOfTauParameters> BachedAccumulator<E, P> {
             ElementType::TauG1 => {
                 let mut position = 0;
                 position += g1_size * index;
-                assert!(index < P::TAU_POWERS_G1_LENGTH, format!("Index of TauG1 element written must not exceed {}, while it's {}", P::TAU_POWERS_G1_LENGTH, index));
+                assert!(index < P::TAU_POWERS_G1_LENGTH, "Index of TauG1 element written must not exceed {}, while it's {}", P::TAU_POWERS_G1_LENGTH, index);
 
                 position
             },
             ElementType::TauG2 => {
                 let mut position = 0;
                 position += g1_size * required_tau_g1_power;
-                assert!(index < P::TAU_POWERS_LENGTH, format!("Index of TauG2 element written must not exceed {}, while it's {}", P::TAU_POWERS_LENGTH, index));
+                assert!(index < P::TAU_POWERS_LENGTH, "Index of TauG2 element written must not exceed {}, while it's {}", P::TAU_POWERS_LENGTH, index);
                 position += g2_size * index;
 
                 position
@@ -159,7 +159,7 @@ impl<E:Engine, P: PowersOfTauParameters> BachedAccumulator<E, P> {
                 let mut position = 0;
                 position += g1_size * required_tau_g1_power;
                 position += g2_size * required_power;
-                assert!(index < P::TAU_POWERS_LENGTH, format!("Index of AlphaG1 element written must not exceed {}, while it's {}", P::TAU_POWERS_LENGTH, index));
+                assert!(index < P::TAU_POWERS_LENGTH, "Index of AlphaG1 element written must not exceed {}, while it's {}", P::TAU_POWERS_LENGTH, index);
                 position += g1_size * index;
 
                 position
@@ -169,7 +169,7 @@ impl<E:Engine, P: PowersOfTauParameters> BachedAccumulator<E, P> {
                 position += g1_size * required_tau_g1_power;
                 position += g2_size * required_power;
                 position += g1_size * required_power;
-                assert!(index < P::TAU_POWERS_LENGTH, format!("Index of BetaG1 element written must not exceed {}, while it's {}", P::TAU_POWERS_LENGTH, index));
+                assert!(index < P::TAU_POWERS_LENGTH, "Index of BetaG1 element written must not exceed {}, while it's {}", P::TAU_POWERS_LENGTH, index);
                 position += g1_size * index;
 
                 position
